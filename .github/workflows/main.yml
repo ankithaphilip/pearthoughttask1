@@ -1,5 +1,4 @@
-
-name: NestJS APP
+name: Deploy NestJS App
 
 on:
   push:
@@ -7,8 +6,8 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: new
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -24,12 +23,16 @@ jobs:
 
       - name: Deploy to the instance
         env:
-          
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-            cd /home/$SSH_USERNAME/typescript-starter
-            npm install
-            npm run build
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@your-server-ip "bash -s" <<'EOF'
+            cd /home/$SSH_USERNAME/typescript-starter || exit
+            npm install || exit
+            npm run build || exit
             pm2 stop nestjs-hello-world || true
-            pm2 start dist/main.js --name "nestjs-hello-world"
-          
+            pm2 start dist/main.js --name "nestjs-hello-world" || exit
+          EOF
