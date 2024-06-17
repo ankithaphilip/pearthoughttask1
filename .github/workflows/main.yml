@@ -6,7 +6,7 @@
           mkdir -p ~/.ssh
           echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -vvv -o StrictHostKeyChecking=no $SSH_USERNAME@172.31.36.173"bash -s" <<'EOF'
+          ssh -vvv -o StrictHostKeyChecking=no $SSH_USERNAME@23.20.175.8"bash -s" <<'EOF'
             set -e
             echo "Checking if the directory /home/$SSH_USERNAME/typescript-starter exists..."
             if [ ! -d "/home/$SSH_USERNAME/typescript-starter" ]; then
