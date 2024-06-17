@@ -24,9 +24,9 @@ jobs:
       - name: Deploy to the instance
         env:
           
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_USERNAME: ${{ secrets.ubuntu }}
         run: |
-            cd /home/$SSH_USERNAME/typescript-starter
+            cd /home/ubuntu/typescript-starter
             npm install
             npm run build
             pm2 stop nestjs-hello-world || true
