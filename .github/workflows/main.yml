@@ -1,0 +1,35 @@
+
+name: NestJS APP
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: new
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to the instance
+        env:
+          
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+            cd /home/$SSH_USERNAME/typescript-starter
+            npm install
+            npm run build
+            pm2 stop nestjs-hello-world || true
+            pm2 start dist/main.js --name "nestjs-hello-world"
+          
