@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,12 +23,24 @@ jobs:
 
       - name: Deploy to the instance
         env:
-          
-          SSH_USERNAME: ${{ secrets.ubuntu }}
+          SSH_USERNAME: ubuntu  # Replace with your SSH username
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-            cd /home/ubuntu/typescript-starter
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -vvv -o StrictHostKeyChecking=no $SSH_USERNAME@your-server-ip "bash -s" <<'EOF'
+            set -e
+            echo "Checking if the directory /home/$SSH_USERNAME/typescript-starter exists..."
+            if [ ! -d "/home/$SSH_USERNAME/typescript-starter" ]; then
+              echo "Directory /home/$SSH_USERNAME/typescript-starter does not exist. Creating it..."
+              mkdir -p /home/$SSH_USERNAME/typescript-starter
+            fi
+            cd /home/$SSH_USERNAME/typescript-starter
+            echo "Directory contents:"
+            ls -la
             npm install
             npm run build
             pm2 stop nestjs-hello-world || true
             pm2 start dist/main.js --name "nestjs-hello-world"
-          
+          EOF
