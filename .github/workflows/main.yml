@@ -30,6 +30,9 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@23.20.175.8 "bash -s" <<'EOF'
+            echo "Connected to server"
+            ls -la /home/$SSH_USERNAME/.ssh
+            ls -la /home/$SSH_USERNAME/typescript-starter
             cd /home/$SSH_USERNAME/typescript-starter || exit
             npm install || exit
             npm run build || exit
