@@ -1,37 +1,31 @@
-name: Deploy NestJS
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - master
+      - main  # Or 'master', depending on your default branch
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run build
-        run: npm run build
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ubuntu/pearthoughttask1
-            git pull origin main
-            npm install
-            npm run build
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          PROJECT_PATH: /home/ubuntu/pearthoughttask1  # Adjust to your project path on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "cd $PROJECT_PATH &&
+            git pull origin main &&
+            npm install &&
+            npm run build &&
+            pm2 restart all"
