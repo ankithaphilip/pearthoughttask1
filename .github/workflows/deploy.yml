@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/Nestjs_App
+            cd /home/ubuntu/pearthoughttask1
             git pull origin main
             npm install
             npm run build
