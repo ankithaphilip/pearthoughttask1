@@ -1,12 +1,12 @@
-name: Deploy NextApp
+name: Deploy Next.js Application
 
 on:
   push:
     branches:
-      - master
+      - master  # Or 'main', depending on your default branch
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,16 +16,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
-
-      - name: Download from GitHub
-        run: git clone https://github.com/ankithaphilip/pearthoughttask1.git
-
-      - name: Navigate to directory
-        run: cd pearthoughttask1
+          node-version: '14'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm run start
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /path/to/your/project && git pull && npm install && npm run build && pm2 restart all"
