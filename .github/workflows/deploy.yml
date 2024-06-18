@@ -24,8 +24,5 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           PROJECT_PATH: /home/ubuntu/pearthoughttask1  # Adjust to your project path on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "cd $PROJECT_PATH &&
-            git pull origin main &&
-            npm install &&
-            npm run build &&
-            pm2 restart all"
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "cd $PROJECT_PATH && git pull origin main && npm install && npm run build && pm2 restart all"
+
