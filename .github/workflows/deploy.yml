@@ -16,12 +16,12 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY}}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to EC2
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST}}
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME}}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
           PROJECT_PATH: /home/ubuntu/pearthoughttask1  # Adjust to your project path on EC2
         run: |
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "cd $PROJECT_PATH &&
