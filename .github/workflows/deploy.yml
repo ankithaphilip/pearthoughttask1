@@ -22,7 +22,7 @@ jobs:
         run: git clone https://github.com/ankithaphilip/pearthoughttask1.git
 
       - name: Navigate to directory
-        run: cd Deploy-NestJS-helloWorld
+        run: cd pearthoughttask1
 
       - name: Install dependencies
         run: npm install
